@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS base
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /src
 COPY ["/API/API.csproj", "/API/"]
 COPY ["/Application/Application.csproj", "/Application/"]
