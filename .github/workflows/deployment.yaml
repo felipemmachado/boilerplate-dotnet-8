@@ -25,6 +25,5 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: /Dockerfile
           push: true
           tags: felipemmachado28/boilerplate-dotnet8:latest
