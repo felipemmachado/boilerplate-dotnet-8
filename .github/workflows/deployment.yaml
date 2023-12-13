@@ -26,5 +26,5 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: felipemmachado28/boilerplate-dotnet8:latest
+          tags: felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
