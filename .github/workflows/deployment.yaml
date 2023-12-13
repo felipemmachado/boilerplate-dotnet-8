@@ -27,3 +27,4 @@ jobs:
         with:
           push: true
           tags: felipemmachado28/boilerplate-dotnet8:latest
+
