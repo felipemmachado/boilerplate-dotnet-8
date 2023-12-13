@@ -27,9 +27,9 @@ jobs:
         with:
           push: true
           tags: felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
-          
+
       - name: show sha
-        run: echo '${{ github.sha }}''
+        run: echo ${{ github.sha }}
 
   deploy-development:
     name: "deploy dev ambient"
@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: show sha
-        run: echo '${{ github.sha }}''
+        run: echo ${{ github.sha }}
 
       - name: deploy dev
         run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
