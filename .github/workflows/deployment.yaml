@@ -43,23 +43,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
   
-      - name: Check for changes
-        id: check
+      - name: Check if commit is on main
         run: |
-          if [ "$(git rev-parse HEAD)" != "$(git rev-parse main)" ]; then
-            echo "Commit detected on main branch. Running the job."
-            echo "::set-output name=run_job::true"
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Commit is on main branch. Proceeding with the job."
           else
-            echo "No new commit on main branch. Skipping the job."
-            echo "::set-output name=run_job::false"
+            echo "Commit is not on main branch. Skipping the job."
+            exit 0
           fi
-  
-      - name: Run job if commit
-        if: steps.check.outputs.run_job == 'true'
-        run: |
-          # Your job commands go here
-          echo "Running the job because a new commit was detected on main branch."    
           
       - name: Login to Docker Hub
         uses: docker/login-action@v2
