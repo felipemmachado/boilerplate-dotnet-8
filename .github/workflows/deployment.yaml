@@ -33,7 +33,7 @@ jobs:
 
   migration-develop:
     name: "migration develop"
-    runs-on: dev
+    runs-on: ubuntu-latest
 
     needs: build
 
