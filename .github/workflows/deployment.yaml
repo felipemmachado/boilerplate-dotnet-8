@@ -30,15 +30,15 @@ jobs:
 
   migration-develop:
     name: "migration develop"
-    runs-on: ubuntu-latest
+    runs-on: dev
 
     needs: build
 
     environment:
       name: develop
 
-    #env:
-    #  DOTNET_INSTALL_DIR: "home/github-install/dotnet"
+    env:
+      DOTNET_INSTALL_DIR: "home/github-install/dotnet"
 
     steps:
       - name: Checkout code
