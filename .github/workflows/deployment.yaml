@@ -51,7 +51,7 @@ jobs:
   deploy-hml:
     name: "deploy hml"
     runs-on: ubuntu-latest
-    needs: build
+    needs: deploy-dev
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
