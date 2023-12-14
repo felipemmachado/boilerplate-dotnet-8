@@ -81,14 +81,20 @@ jobs:
       - name: show file
         run: cat API/appsettings.json
 
-      - name: Build
-        run: dotnet build "API/API.csproj" -c Release
+      #- name: Build
+      #  run: dotnet build "API/API.csproj" -c Release
 
       - name: path
         run: export PATH=$PATH:$${{ github.workspace }}
 
       - name: ls
-        run: ls ${{ github.workspace }}
+        run: ls -lsa ${{ github.workspace }}
+
+      - name: ls
+        run: ls -lsa ${{ github.workspace }}/sdk
+
+      - name: ls
+        run: ls -lsa ${{ github.workspace }}/dotnet
   
       - name: Run EF Core Migrations
         run: |
