@@ -25,10 +25,9 @@ jobs:
   
       - name: Check commit in main branch
         run: |
-          MAIN_COMMIT=$(git rev-parse origin/main)
-          CURRENT_COMMIT=$(git rev-parse HEAD)
-  
-          if git merge-base --is-ancestor $MAIN_COMMIT $CURRENT_COMMIT; then
+
+          git checkout origin main
+          if ! git merge-base --is-ancestor ${{ github.sha }} HEAD;
             echo "Current commit is in the main branch."
           else
             echo "Current commit is not in the main branch."
