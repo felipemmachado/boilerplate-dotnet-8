@@ -99,7 +99,7 @@ jobs:
         run: cat docker-compose.yml
 
       - name: docker compose
-        run: sudo docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
+        run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
 
       - name: run migration
-        run: sudo docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"'
+        run: docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"'
