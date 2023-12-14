@@ -9,31 +9,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
+  build-develop:
+    name: Build-develop
     runs-on: ubuntu-latest
-    steps:
 
-  
+    environment:
+      name: develop
+
+    steps:
       - name: Git checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: Fetch main branch
-        run: git fetch origin main
-  
-      - name: Check commit in main branch
-        run: |
-
-          git checkout origin main
-          if ! git merge-base --is-ancestor ${{ github.sha }} HEAD;
-            echo "Current commit is in the main branch."
-          else
-            echo "Current commit is not in the main branch."
-            exit 1
-          fi
-      
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -44,50 +30,61 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
-
-      - name: show sha
-        run: echo ${{ github.sha }}
+          tags: felipemmachado28/boilerplate-dotnet8:develop
 
   deploy-develop:
     name: "deploy develop"
     runs-on: ubuntu-latest
 
-    needs: build
+    needs: build-develop
 
     environment:
       name: develop
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-  
-      - name: Check if commit is on main
-        run: |
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "Commit is on main branch. Proceeding with the job."
-          else
-            echo "Commit is not on main branch. Skipping the job."
-            exit 0
-          fi
-          
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: show sha
-        run: echo ${{ github.sha }}
+      - name: pull image
+        run: docker pull felipemmachado28/boilerplate-dotnet8:develop
 
       - name: deploy
-        run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
+        run: echo 'deploy'
+
+      - name: Remove Docker Image
+        run: docker rmi yourusername/yourrepository:develop
+
+  build-homolog:
+      name: Build-homolog
+      runs-on: ubuntu-latest
+      needs: deploy-develop
+
+      environment:
+        name: homolog
+
+      steps:
+        - name: Git checkout
+          uses: actions/checkout@v3
+  
+        - name: Login to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+        - name: Build and push Docker image
+          uses: docker/build-push-action@v4
+          with:
+            push: true
+            tags: felipemmachado28/boilerplate-dotnet8:develop
 
   deploy-homolog:
     name: "deploy homolog"
     runs-on: ubuntu-latest
-    needs: deploy-develop
+    needs: build-homolog
 
     environment:
       name: homolog
@@ -114,16 +111,6 @@ jobs:
       name: prod
 
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Check if branch is ahead of main
-        run: |
-          if ! [ 0 -eq $(git merge-base --is-ancestor ${{ github.sha }} HEAD) ];
-          then echo "This branch is not up to date with main";
-          exit 1; fi
-
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
