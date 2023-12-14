@@ -9,17 +9,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-develop:
-    name: Build-develop
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
-    environment:
-      name: develop
-
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
-
+      
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -30,64 +26,40 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: felipemmachado28/boilerplate-dotnet8:develop
+          tags: felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
+
+      - name: show sha
+        run: echo ${{ github.sha }}
 
   deploy-develop:
     name: "deploy develop"
     runs-on: ubuntu-latest
 
-    needs: build-develop
+    needs: build
 
     environment:
       name: develop
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: pull image
-        run: docker pull felipemmachado28/boilerplate-dotnet8:develop
+      - name: show sha
+        run: echo ${{ github.sha }}
 
       - name: deploy
-        run: echo 'deploy'
-
-      - name: Delete Docker Image by Tag
-        run: |
-          curl -X DELETE -H "Authorization: Bearer ${{ secrets.DOCKERHUB_TOKEN }}" \
-               "https://hub.docker.com/v2/repositories/felipemmachado28/boilerplate-dotnet8/tags/develop/"
-
-
-  build-homolog:
-      name: Build-homolog
-      runs-on: ubuntu-latest
-      needs: deploy-develop
-
-      environment:
-        name: homolog
-
-      steps:
-        - name: Git checkout
-          uses: actions/checkout@v3
-  
-        - name: Login to Docker Hub
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-        - name: Build and push Docker image
-          uses: docker/build-push-action@v4
-          with:
-            push: true
-            tags: felipemmachado28/boilerplate-dotnet8:develop
+        run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
   deploy-homolog:
     name: "deploy homolog"
     runs-on: ubuntu-latest
-    needs: build-homolog
+    needs: deploy-develop
 
     environment:
       name: homolog
