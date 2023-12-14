@@ -74,36 +74,25 @@ jobs:
       - name: deploy
         run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
-
-  check-rebase-main:
-      name: check rebase main
-      runs-on: ubuntu-latest
-
-      environment:
-        name: prod
-      
-      needs: deploy-homolog
-
-      steps:
-        - name: Git checkout
-          uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
-        - name: Check if branch is ahead of main
-          run: |
-            if ! git merge-base --is-ancestor origin/main ${{ github.event.pull_request.head.sha }};
-            then echo "This branch is not up to date with main";
-            exit 1; fi
-
   deploy-prod:
     name: "deploy prod"
     runs-on: ubuntu-latest
-    needs: check-rebase-main
+    needs: deploy-homolog
 
     environment:
       name: prod
 
     steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check if branch is ahead of main
+        run: |
+          if ! git merge-base --is-ancestor origin/main ${{ github.event.pull_request.head.sha }};
+          then echo "This branch is not up to date with main";
+          exit 1; fi
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
