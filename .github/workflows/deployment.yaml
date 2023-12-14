@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up migration
         uses: actions/setup-dotnet@v4
@@ -56,7 +56,7 @@ jobs:
         run: dotnet restore
 
       - name: show directory
-        run: pwd
+        run: eco '${{ secrets.CONNECTION_STRING }}'
   
       - name: Replace Connection String
         run: sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" API/appsettings.json
