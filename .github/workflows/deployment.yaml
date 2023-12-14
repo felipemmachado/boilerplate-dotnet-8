@@ -83,6 +83,12 @@ jobs:
 
       - name: Build
         run: dotnet build "API/API.csproj" -c Release
+
+      - name: path
+        run: export PATH=$PATH:$${{ github.workspace }}
+
+      - name: ls
+        run: ls ${{ github.workspace }}
   
       - name: Run EF Core Migrations
         run: |
