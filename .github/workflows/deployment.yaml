@@ -54,12 +54,6 @@ jobs:
       - name: deploy
         run: echo 'deploy'
 
-      - name: Get Docker Image Digest
-        id: get_digest
-        run: |
-          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' boilerplate-dotnet8:develop)
-          echo "DIGEST=$DIGEST" >> $GITHUB_ENV
-
       - name: Delete Docker Image by Tag
         run: |
           curl -X DELETE -H "Authorization: Bearer ${{ secrets.DOCKERHUB_TOKEN }}" \
