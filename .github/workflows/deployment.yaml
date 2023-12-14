@@ -9,105 +9,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-develop:
     name: Build
+
     runs-on: ubuntu-latest
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-      
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     push: true
-      #     tags: felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
-
-  migration-develop:
-    name: "migration develop"
-    runs-on: dev
-
-    needs: build
 
     environment:
       name: develop
 
-    env:
-      DOTNET_INSTALL_DIR: ${{ github.workspace }}
-
     steps:
-      - name: Checkout code
+      - name: Git checkout
         uses: actions/checkout@v3
-
-      - name: Set up migration
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8' # Change this to the version you are using
-        
-      #- name: Install dotnet-ef tool
-      #  run: dotnet tool install dotnet-ef
-
-      - name: Restore dependencies
-        run: dotnet restore
       
-      - name: Replace Connection String
-        run: |
-          sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" API/appsettings.json
-          sed -i "s|APPLICATION_INSIGHTS_KEY|${{ secrets.APPLICATION_INSIGHTS_KEY }}|" API/appsettings.json
-          sed -i "s|JWT_APPLICATION_KEY|${{ secrets.JWT_APPLICATION_KEY }}|" API/appsettings.json
-          sed -i "s|JWT_PASSWORD_KEY|${{ secrets.JWT_PASSWORD_KEY }}|" API/appsettings.json
-          sed -i "s|FILE_KEY_ID|${{ secrets.FILE_KEY_ID }}|" API/appsettings.json
-          sed -i "s|FILE_SECRET_KEY|${{ secrets.FILE_SECRET_KEY }}|" API/appsettings.json
-
-          sed -i "s|JWT_APPLICATION_EXPIRES_MINUTES|${{ vars.JWT_APPLICATION_EXPIRES_MINUTES }}|" API/appsettings.json
-          sed -i "s|JWT_APPLICATION_ISUSER|${{ vars.JWT_APPLICATION_ISUSER }}|" API/appsettings.json
-          sed -i "s|JWT_PASSWORD_EXPIRES_MINUTES|${{ vars.JWT_PASSWORD_EXPIRES_MINUTES }}|" API/appsettings.json
-          sed -i "s|JWT_PASSWORD_ISUSER|${{ vars.JWT_PASSWORD_ISUSER }}|" API/appsettings.json
-          sed -i "s|URL_FRONT|${{ vars.URL_FRONT }}|" API/appsettings.json
-          sed -i "s|FILE_BUCKET_NAME|${{ vars.FILE_BUCKET_NAME }}|" API/appsettings.json
-          sed -i "s|FILE_BUCKET_URL|${{ vars.FILE_BUCKET_URL }}|" API/appsettings.json
-          sed -i "s|FILE_SERVER_URL|${{ vars.FILE_SERVER_URL }}|" API/appsettings.json
-          sed -i "s|FORM_EMAIL|${{ vars.FORM_EMAIL }}|" API/appsettings.json
-          sed -i "s|FROM_NAME|${{ vars.FROM_NAME }}|" API/appsettings.json
-          sed -i "s|SENDGRID_FIRST_ACCESS_ID|${{ vars.SENDGRID_FIRST_ACCESS_ID }}|" API/appsettings.json
-          sed -i "s|SENDGRID_FORGOT_PASSWORD_ID|${{ vars.SENDGRID_FORGOT_PASSWORD_ID }}|" API/appsettings.json
-          sed -i "s|SENDGRID_KEY|${{ vars.SENDGRID_KEY }}|" API/appsettings.json
-
-      - name: show file
-        run: cat API/appsettings.json
-
-      - name: Build
-        run: dotnet build "API/API.csproj" -c Release
-
-      - name: path
-        run: export PATH=$PATH:$${{ github.workspace }}
-
-      - name: ls
-        run: ls -lsa ${{ github.workspace }}/sdk
-
-      - name: ls
-        run: ls -lsa ${{ github.workspace }}/sdk
-
-      - name: ls
-        run: ls -lsa ${{ github.workspace }}/dotnet
-  
-      - name: Run EF Core Migrations
-        run: |
-          dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
-        env:
-          ASPNETCORE_ENVIRONMENT: Release
-          PATH: $PATH:$HOME/$${{ github.workspace }}/dotnet/.dotnet/tools
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}
 
   deploy-develop:
     name: "deploy develop"
     runs-on: dev
 
-    needs: migration-develop
+    needs: build-develop
 
     environment:
       name: develop
@@ -116,16 +46,42 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Replace Connection String
+        run: |
+          sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" docker-compose.yaml
+          sed -i "s|APPLICATION_INSIGHTS_KEY|${{ secrets.APPLICATION_INSIGHTS_KEY }}|" docker-compose.yaml
+          sed -i "s|JWT_APPLICATION_KEY|${{ secrets.JWT_APPLICATION_KEY }}|" docker-compose.yaml
+          sed -i "s|JWT_PASSWORD_KEY|${{ secrets.JWT_PASSWORD_KEY }}|" docker-compose.yaml
+          sed -i "s|FILE_KEY_ID|${{ secrets.FILE_KEY_ID }}|" docker-compose.yaml
+          sed -i "s|FILE_SECRET_KEY|${{ secrets.FILE_SECRET_KEY }}|" docker-compose.yaml
 
-      - name: pull image
-        run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
+          sed -i "s|JWT_APPLICATION_EXPIRES_MINUTES|${{ vars.JWT_APPLICATION_EXPIRES_MINUTES }}|" docker-compose.yaml
+          sed -i "s|JWT_APPLICATION_ISUSER|${{ vars.JWT_APPLICATION_ISUSER }}|" docker-compose.yaml
+          sed -i "s|JWT_PASSWORD_EXPIRES_MINUTES|${{ vars.JWT_PASSWORD_EXPIRES_MINUTES }}|" docker-compose.yaml
+          sed -i "s|JWT_PASSWORD_ISUSER|${{ vars.JWT_PASSWORD_ISUSER }}|" docker-compose.yaml
+          sed -i "s|URL_FRONT|${{ vars.URL_FRONT }}|" docker-compose.yaml
+          sed -i "s|FILE_BUCKET_NAME|${{ vars.FILE_BUCKET_NAME }}|" docker-compose.yaml
+          sed -i "s|FILE_BUCKET_URL|${{ vars.FILE_BUCKET_URL }}|" docker-compose.yaml
+          sed -i "s|FILE_SERVER_URL|${{ vars.FILE_SERVER_URL }}|" docker-compose.yaml
+          sed -i "s|FORM_EMAIL|${{ vars.FORM_EMAIL }}|" docker-compose.yaml
+          sed -i "s|FROM_NAME|${{ vars.FROM_NAME }}|" docker-compose.yaml
+          sed -i "s|SENDGRID_FIRST_ACCESS_ID|${{ vars.SENDGRID_FIRST_ACCESS_ID }}|" docker-compose.yaml
+          sed -i "s|SENDGRID_FORGOT_PASSWORD_ID|${{ vars.SENDGRID_FORGOT_PASSWORD_ID }}|" docker-compose.yaml
+          sed -i "s|SENDGRID_KEY|${{ vars.SENDGRID_KEY }}|" docker-compose.yaml
+          
+          sed -i "s|DOCKER_SERVER_NAME|${{ vars.DOCKER_SERVER_NAME }}|" docker-compose.yaml
+          sed -i "s|DOCKER_CONTAINER_NAME|${{ vars.DOCKER_CONTAINER_NAME }}|" docker-compose.yaml
+          sed -i "s|DOCKER_IMAGE_NAME|${{ vars.DOCKER_IMAGE_NAME }}:${{vars.DOCKER_TAG }}|" docker-compose.yaml
+          sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yaml
 
-      - name: run docker container
-        run: docker run -d -p 8080:5001 |
-            -e ConnectionStrings__connectionString='${{ secrets.CONNECTION_STRING }}'
-            --name boilerplate-dotnet8:dev felipemmachado28/boilerplate-dotnet8
+      - name: show docker-compose.yaml
+        run: cat docker-compose.yaml
+
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: pull image
+      #   run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
