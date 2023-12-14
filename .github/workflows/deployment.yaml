@@ -96,7 +96,7 @@ jobs:
           sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yml
 
       - name: show docker-compose.yml
-        run: cat docker-compose.yml
+        run: docker compose version
 
       - name: docker compose
         run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
