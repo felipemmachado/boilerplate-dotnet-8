@@ -38,8 +38,8 @@ jobs:
       name: develop
 
     env:
-      DOTNET_INSTALL_DIR: "/home/github-install/dotnet"
-      #PATH: "$PATH:/home/github-install/dotnet/tools"
+      DOTNET_INSTALL_DIR: "home/github-install/dotnet"
+      PATH: "$PATH:home/github-install/dotnet/tools"
 
     steps:
       - name: Checkout code
