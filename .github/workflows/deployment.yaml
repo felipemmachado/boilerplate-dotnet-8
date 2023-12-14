@@ -19,16 +19,16 @@ jobs:
       - name: Fetch main branch
         run: git fetch origin main
   
-      - name: Check branch status
+      - name: Check commit in main branch
         run: |
-          BASE=$(git rev-parse origin/main)
-          CURRENT=$(git rev-parse HEAD)
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          CURRENT_COMMIT=$(git rev-parse HEAD)
   
-          if [ $BASE != $CURRENT ]; then
-            echo "Branch is behind main."
-            exit 1
+          if git merge-base --is-ancestor $MAIN_COMMIT $CURRENT_COMMIT; then
+            echo "Current commit is in the main branch."
           else
-            echo "Branch is up to date with main."
+            echo "Current commit is not in the main branch."
+            exit 1
           fi
       
       - name: Login to Docker Hub
