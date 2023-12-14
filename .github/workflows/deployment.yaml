@@ -2,9 +2,9 @@ name: Boilerplate deployment
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
-    branches: [main]
+    branches: [develop]
   
   workflow_dispatch:
 
@@ -31,14 +31,14 @@ jobs:
       - name: show sha
         run: echo ${{ github.sha }}
 
-  deploy-dev:
-    name: "deploy dev"
+  deploy-develop:
+    name: "deploy develop"
     runs-on: ubuntu-latest
 
     needs: build
 
     environment:
-      name: dev
+      name: develop
 
     steps:
       - name: Login to Docker Hub
@@ -53,13 +53,13 @@ jobs:
       - name: deploy
         run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
-  deploy-hml:
-    name: "deploy hml"
+  deploy-homolog:
+    name: "deploy homolog"
     runs-on: ubuntu-latest
-    needs: deploy-dev
+    needs: deploy-develop
 
     environment:
-      name: hml
+      name: homolog
 
     steps:
       - name: Login to Docker Hub
