@@ -61,7 +61,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_TOKEN }} > dockerhub_pass
       
       - name: Login to Docker Hub
-        run: cat ~/dockerhub_pass | docker login --username felipemmachado28 --password-stdin
+        run: sudo cat ~/dockerhub_pass | docker login --username felipemmachado28 --password-stdin
 
       - name: Replace Connection String
         run: |
