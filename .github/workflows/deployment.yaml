@@ -39,7 +39,6 @@ jobs:
 
     env:
       DOTNET_INSTALL_DIR: "home/github-install/dotnet"
-      PATH: "$PATH:home/github-install/dotnet/tools"
 
     steps:
       - name: Checkout code
@@ -89,6 +88,7 @@ jobs:
           dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
         env:
           ASPNETCORE_ENVIRONMENT: Release
+          PATH: "$PATH:home/github-install/dotnet/tools"
       
 
   deploy-develop:
