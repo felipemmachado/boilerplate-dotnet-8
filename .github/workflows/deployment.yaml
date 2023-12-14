@@ -22,7 +22,7 @@ jobs:
             echo "Commit is on main branch. Proceeding with the job."
           else
             echo "Commit is not on main branch. Skipping the job."
-            exit 0
+            exit 1
           fi
       
       - name: Login to Docker Hub
