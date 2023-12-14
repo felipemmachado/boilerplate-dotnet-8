@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-develop:
-    name: Build
+    name: Build develop
 
     runs-on: ubuntu-latest
 
