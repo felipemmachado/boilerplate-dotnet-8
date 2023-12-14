@@ -6,7 +6,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Release
       - ASPNETCORE_URLS=http://0.0.0.0:5001
+
       - ConnectionStrings__connectionString=CONNECTION_STRING
+
+      - ApplicationInsights__ConnectionString=APPLICATION_INSIGHTS_KEY    
 
       - JwtApplicationConfig__Key=JWT_APPLICATION_KEY
       - JwtApplicationConfig__Issuer=JWT_APPLICATION_ISUSER
@@ -18,19 +21,18 @@ services:
       - JwtPasswordConfig__Audience=PasswordToken
       - JwtPasswordConfig__expiresInMinutes=JWT_PASSWORD_EXPIRES_MINUTES
 
-      - EmailConfig__apiKey=FromEmail
+      - EmailConfig__apiKey=SENDGRID_KEY
       - EmailConfig__ForgotPasswordId=SENDGRID_FORGOT_PASSWORD_ID
       - EmailConfig__FirstAccessId=SENDGRID_FIRST_ACCESS_ID
       - EmailConfig__UrlFront=URL_FRONT
       - EmailConfig__FromName=FROM_NAME
       - EmailConfig__FromEmail=FORM_EMAIL
 
-      - FileConfig__BucketName=FILE_KEY_ID
-      - FileConfig__BucketUrl=__UPLOADFILE_CDN__
-      - FileConfig__ServiceURL=__UPLOADFILE_ACCESS__
-      - FileConfig__AccessKeyId=__UPLOADFILE_KEY__
-      - FileConfig__SecretKey=__UPLOADFILE_ENV__
+      - FileConfig__BucketName=FILE_BUCKET_NAME
+      - FileConfig__BucketUrl=FILE_BUCKET_URL
+      - FileConfig__ServiceURL=FILE_SERVER_URL
+      - FileConfig__AccessKeyId=FILE_KEY_ID
+      - FileConfig__SecretKey=FILE_SECRET_KEY
 
-      - ApplicationInsights__ConnectionString=APPLICATION_INSIGHTS_KEY                
     ports:
       - "DOCKER_PORT"
