@@ -55,7 +55,7 @@ jobs:
         run: echo 'deploy'
 
       - name: Remove Docker Image
-        run: docker rmi yourusername/yourrepository:develop
+        run: docker rmi felipemmachado28/boilerplate-dotnet8:develop
 
   build-homolog:
       name: Build-homolog
