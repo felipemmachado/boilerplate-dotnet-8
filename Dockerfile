@@ -29,6 +29,6 @@ USER dotnetuser
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-RUN dotnet tool install --global dotnet-ef
-ENV PATH "$PATH:/root/.dotnet/tools"
+#RUN dotnet tool install --global dotnet-ef
+#ENV PATH "$PATH:/root/.dotnet/tools"
 ENTRYPOINT ["dotnet", "API.dll"]
