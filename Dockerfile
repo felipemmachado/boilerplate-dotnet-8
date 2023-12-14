@@ -17,10 +17,8 @@ RUN dotnet build "API.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "API.csproj" -c Release -o /app/publish \
-  --runtime alpine-x64 \
-  --self-contained true \
-  /p:PublishTrimmed=true \
-  /p:PublishSingleFile=true
+  --r linux-x64 \
+  --self-contained
 
 FROM base AS final
 # create a new user and change directory ownership
