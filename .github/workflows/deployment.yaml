@@ -54,8 +54,17 @@ jobs:
       - name: deploy
         run: echo 'deploy'
 
-      - name: Remove Docker Image
-        run: docker rmi felipemmachado28/boilerplate-dotnet8:develop
+      - name: Get Docker Image Digest
+        id: get_digest
+        run: |
+          DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' boilerplate-dotnet8:develop)
+          echo "DIGEST=$DIGEST" >> $GITHUB_ENV
+
+      - name: Delete Docker Image by Tag
+        run: |
+          curl -X DELETE -H "Authorization: Bearer ${{ secrets.DOCKERHUB_TOKEN }}" \
+               "https://hub.docker.com/v2/repositories/felipemmachado28/boilerplate-dotnet8/tags/develop/"
+
 
   build-homolog:
       name: Build-homolog
