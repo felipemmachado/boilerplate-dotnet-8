@@ -81,14 +81,14 @@ jobs:
       - name: show file
         run: cat API/appsettings.json
 
-      #- name: Build
-      #  run: dotnet build "API/API.csproj" -c Release
+      - name: Build
+        run: dotnet build "API/API.csproj" -c Release
 
       - name: path
         run: export PATH=$PATH:$${{ github.workspace }}
 
       - name: ls
-        run: ls -lsa ${{ github.workspace }}
+        run: ls -lsa ${{ github.workspace }}/sdk
 
       - name: ls
         run: ls -lsa ${{ github.workspace }}/sdk
@@ -101,7 +101,7 @@ jobs:
           dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
         env:
           ASPNETCORE_ENVIRONMENT: Release
-          PATH: $PATH:$HOME/$${{ github.workspace }}/.dotnet/tools
+          PATH: $PATH:$HOME/$${{ github.workspace }}/dotnet/.dotnet/tools
 
   deploy-develop:
     name: "deploy develop"

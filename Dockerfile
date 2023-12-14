@@ -1,5 +1,5 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/runtime:8.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -29,6 +29,6 @@ USER dotnetuser
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-#RUN dotnet tool install --global dotnet-ef
-#ENV PATH "$PATH:/root/.dotnet/tools"
+RUN dotnet tool install --global dotnet-ef
+ENV PATH "$PATH:/root/.dotnet/tools"
 ENTRYPOINT ["dotnet", "API.dll"]
