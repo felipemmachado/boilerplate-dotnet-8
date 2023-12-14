@@ -75,7 +75,8 @@ jobs:
         run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
 
-  check_if_branch_is_ahead_of_main:
+  check-rebase-main:
+      name: check rebase main
       runs-on: ubuntu-latest
 
       environment:
@@ -97,7 +98,7 @@ jobs:
   deploy-prod:
     name: "deploy prod"
     runs-on: ubuntu-latest
-    needs: deploy-homolog
+    needs: check-rebase-main
 
     environment:
       name: prod
