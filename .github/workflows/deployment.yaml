@@ -51,11 +51,6 @@ jobs:
         
       #- name: Install dotnet-ef tool
       #  run: dotnet tool install dotnet-ef
-      - name: Print .NET Tools Path
-        run: echo "DOTNET_ROOT: $DOTNET_ROOT"
-
-      - name: Print .NET Tools Path
-        run: echo "DOTNET_TOOLS_PATH: $DOTNET_ROOT/tools"
 
       - name: Restore dependencies
         run: dotnet restore
@@ -94,7 +89,7 @@ jobs:
           dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
         env:
           ASPNETCORE_ENVIRONMENT: Release
-          PATH: $PATH:$HOME/${{ github.workspace }}/.dotnet/tools
+          PATH: $PATH:$HOME/$${{ github.workspace }}/.dotnet/tools
       
 
   deploy-develop:
