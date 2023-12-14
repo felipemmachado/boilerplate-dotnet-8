@@ -51,18 +51,20 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8' # Change this to the version you are using
-  
+      
+      - name: Install dotnet-ef
+        run: dotnet tool install --global dotnet-ef
+        
       - name: Restore dependencies
         run: dotnet restore
-      
-     # - name: Install dotnet-ef
-     #   run: dotnet tool install --global dotnet-ef
   
       - name: Replace Connection String
         run: sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" API/appsettings.json
   
       - name: Run EF Core Migrations
         run: dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
       
 
   deploy-develop:
