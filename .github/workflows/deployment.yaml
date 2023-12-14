@@ -87,9 +87,6 @@ jobs:
       - name: show docker-compose.yaml
         run: cat docker-compose.yaml
 
-      - name: pull image
-        run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
-
       - name: docker compose
         run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
 
