@@ -2,9 +2,9 @@ name: Boilerplate deployment
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
-    branches: [main]
+    branches: [develop]
   
   workflow_dispatch:
 
@@ -31,14 +31,14 @@ jobs:
       - name: show sha
         run: echo ${{ github.sha }}
 
-  deploy-dev:
-    name: "deploy dev"
+  deploy-develop:
+    name: "deploy develop"
     runs-on: ubuntu-latest
 
     needs: build
 
     environment:
-      name: dev
+      name: develop
 
     steps:
       - name: Login to Docker Hub
@@ -53,15 +53,46 @@ jobs:
       - name: deploy
         run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
 
-  deploy-hml:
-    name: "deploy hml"
+  deploy-homolog:
+    name: "deploy homolog"
     runs-on: ubuntu-latest
-    needs: deploy-dev
+    needs: deploy-develop
 
     environment:
-      name: hml
+      name: homolog
 
     steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: show sha
+        run: echo ${{ github }}
+
+      - name: deploy
+        run: docker pull felipemmachado28/boilerplate-dotnet8:${{ github.sha }}
+
+  deploy-prod:
+    name: "deploy prod"
+    runs-on: ubuntu-latest
+    needs: deploy-homolog
+
+    environment:
+      name: prod
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check if branch is ahead of main
+        run: |
+          if ! git merge-base --is-ancestor origin/main ${{ github.event.pull_request.head.sha }};
+          then echo "This branch is not up to date with main";
+          exit 1; fi
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
