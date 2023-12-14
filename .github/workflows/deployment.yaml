@@ -59,7 +59,7 @@ jobs:
       #  run: sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" API/appsettings.json
 
       - name: Build
-        run: dotnet build "API.csproj" -c Release
+        run: dotnet build "API/API.csproj" -c Release
   
       - name: Run EF Core Migrations
         run: |
