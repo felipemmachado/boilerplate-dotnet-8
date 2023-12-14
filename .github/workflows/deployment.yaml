@@ -51,6 +51,11 @@ jobs:
         
       #- name: Install dotnet-ef tool
       #  run: dotnet tool install dotnet-ef
+      - name: Print .NET Tools Path
+        run: echo "DOTNET_ROOT: $DOTNET_ROOT"
+
+      - name: Print .NET Tools Path
+        run: echo "DOTNET_TOOLS_PATH: $DOTNET_ROOT/tools"
 
       - name: Restore dependencies
         run: dotnet restore
