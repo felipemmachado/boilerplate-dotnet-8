@@ -44,16 +44,19 @@ jobs:
       DOTNET_INSTALL_DIR: "home/github-install/dotnet"
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Set up migration
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8' # Change this to the version you are using
+
+      - name: Checkout code
+        uses: actions/checkout@v2
         
       - name: Restore dependencies
         run: dotnet restore
+
+      - name: show directory
+        run: pwd
   
       - name: Replace Connection String
         run: sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" API/appsettings.json
