@@ -39,7 +39,7 @@ jobs:
 
     env:
       DOTNET_INSTALL_DIR: "/home/github-install/dotnet"
-      PATH: "$PATH:/home/github-install/dotnet/tools"
+      #PATH: "$PATH:/home/github-install/dotnet/tools"
 
     steps:
       - name: Checkout code
