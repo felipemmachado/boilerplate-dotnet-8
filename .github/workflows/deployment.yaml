@@ -16,13 +16,19 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
-      - name: Check if commit is on main
+      - name: Fetch main branch
+        run: git fetch origin main
+  
+      - name: Check branch status
         run: |
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "Commit is on main branch. Proceeding with the job."
-          else
-            echo "Commit is not on main branch. Skipping the job."
+          BASE=$(git rev-parse origin/main)
+          CURRENT=$(git rev-parse HEAD)
+  
+          if [ $BASE != $CURRENT ]; then
+            echo "Branch is behind main."
             exit 1
+          else
+            echo "Branch is up to date with main."
           fi
       
       - name: Login to Docker Hub
