@@ -50,8 +50,8 @@ jobs:
           dotnet-version: '8' # Change this to the version you are using
         
       - name: Install dotnet-ef tool
-        run: dotnet tool install --global dotnet-ef
-        
+        run: dotnet tool install dotnet-ef
+
       - name: Restore dependencies
         run: dotnet restore
       
