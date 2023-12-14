@@ -120,6 +120,7 @@ jobs:
           fetch-depth: 0
       - name: Check if branch is ahead of main
         run: |
+          git checkout main
           if ! [ 0 -eq $(git merge-base --is-ancestor ${{ github.sha }} HEAD) ];
           then echo "This branch is not up to date with main";
           exit 1; fi
