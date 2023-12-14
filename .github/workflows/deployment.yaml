@@ -38,19 +38,20 @@ jobs:
       name: develop
 
     env:
-      DOTNET_INSTALL_DIR: "home/github-install/dotnet"
+      DOTNET_INSTALL_DIR: "/usr/share/dotnet"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up migration
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8' # Change this to the version you are using
         
       #- name: Install dotnet-ef tool
       #  run: dotnet tool install --global dotnet-ef
+      
       - name: Restore dependencies
         run: dotnet restore
       
