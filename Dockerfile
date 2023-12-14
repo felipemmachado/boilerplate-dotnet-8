@@ -16,9 +16,7 @@ WORKDIR "/src/API"
 RUN dotnet build "API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "API.csproj" -c Release -o /app/publish \
-  --r linux-x64 \
-  --self-contained
+RUN dotnet publish "API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 # create a new user and change directory ownership
@@ -31,6 +29,6 @@ USER dotnetuser
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-#RUN dotnet tool install --global dotnet-ef
-#ENV PATH "$PATH:/root/.dotnet/tools"
+RUN dotnet tool install --global dotnet-ef
+ENV PATH "$PATH:/root/.dotnet/tools"
 ENTRYPOINT ["dotnet", "API.dll"]
