@@ -96,16 +96,10 @@ jobs:
           sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yml
 
       - name: show docker-compose.yml
-        run: |
-          id -a 
-          docker compose version
+        run: docker compose version
 
       - name: docker compose
-        run: |
-          id -a 
-          docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all | ${{ secrets.SUDO_PASS }}
+        run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all | ${{ secrets.SUDO_PASS }}
 
       - name: run migration
-        run: |
-          id -a 
-          docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"' | ${{ secrets.SUDO_PASS }}
+        run: docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"' | ${{ secrets.SUDO_PASS }}
