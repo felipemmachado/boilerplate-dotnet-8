@@ -38,7 +38,7 @@ jobs:
       name: develop
 
     env:
-      DOTNET_INSTALL_DIR: "/usr/share/dotnet"
+      DOTNET_INSTALL_DIR: ${{ github.workspace }}
 
     steps:
       - name: Checkout code
@@ -51,7 +51,6 @@ jobs:
         
       #- name: Install dotnet-ef tool
       #  run: dotnet tool install --global dotnet-ef
-      
       - name: Restore dependencies
         run: dotnet restore
       
