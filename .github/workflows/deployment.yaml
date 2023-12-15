@@ -155,7 +155,7 @@ jobs:
 
             docker compose down
 
-            docker compose up -d
+            docker compose up --build -d
 
             docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"
 
