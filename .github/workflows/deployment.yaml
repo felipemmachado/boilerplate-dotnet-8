@@ -105,7 +105,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_KEY }}
-          localDir: "/docker-compose.yml"
+          localDir: "docker-compose.yml"
           remoteDir: "/home"
           options: "--delete --asci"
 
