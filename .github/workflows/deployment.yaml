@@ -102,6 +102,9 @@ jobs:
       name: develop
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: replace envs
         run: |
           sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" docker-compose.yml
