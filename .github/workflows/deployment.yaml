@@ -126,8 +126,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Run Migrations
-      run: dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
+    #- name: Build
+    #  run: dotnet build "API/API.csproj" -c Release
+
+    - name: Run EF Core Migrations
+      run: |
+        dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
+      env:
+        ASPNETCORE_ENVIRONMENT: Release
 
   deploy-develop:
     name: "deploy develop"
