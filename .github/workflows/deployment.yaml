@@ -157,7 +157,7 @@ jobs:
 
             docker compose up -d
 
-            docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"
+      # docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"
      # - name: docker compose
      #   run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
      

@@ -28,7 +28,6 @@ builder.Services.AddApplication();
 
 builder.Services.AddInfra(builder.Configuration);
 
-
 builder.Services.AddCors(o => o.AddPolicy("DevelopPolicy", builder =>
 {
     builder.AllowAnyOrigin()
