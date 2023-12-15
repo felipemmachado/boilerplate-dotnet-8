@@ -53,7 +53,7 @@ builder.Services.AddResponseCompression(opt =>
 
 var app = builder.Build();
 
-// var policy = "ProductionPolicy";
+var policy = "ProductionPolicy";
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
