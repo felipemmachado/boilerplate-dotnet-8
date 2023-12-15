@@ -90,6 +90,9 @@ jobs:
       with:
         dotnet-version: 8
 
+    - name: install ef core
+      run: dotnet tool install --global dotnet-ef
+
     - name: Restore dependencies
       run: dotnet restore
 
