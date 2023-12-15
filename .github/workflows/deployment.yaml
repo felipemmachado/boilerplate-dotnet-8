@@ -130,8 +130,7 @@ jobs:
     #  run: dotnet build "API/API.csproj" -c Release
 
     - name: Run EF Core Migrations
-      run: |
-        dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
+      run: dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
       env:
         ASPNETCORE_ENVIRONMENT: Release
 
