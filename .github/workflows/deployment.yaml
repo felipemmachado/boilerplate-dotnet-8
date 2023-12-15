@@ -98,6 +98,9 @@ jobs:
       - name: show docker-compose.yml
         run: cat docker-compose.yml
 
+      - name: ls
+        run: ls ${{ github.workspace }}
+
       - uses: actions/checkout@v2
       - name: Upload ftp
         uses: sebastianpopp/ftp-action@releases/v2
@@ -105,7 +108,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_KEY }}
-          localDir: "docker-compose.yml"
+          localDir: "${{ github.workspace }}/docker-compose.yml"
           remoteDir: "/home"
           options: "--delete --asci"
 
