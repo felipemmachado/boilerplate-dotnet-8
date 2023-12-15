@@ -72,11 +72,38 @@ jobs:
           path: docker-compose.yml
           if-no-files-found: error
 
+  migration-develop:
+    name: "migration develop"
+    runs-on: ubuntu-latest
+
+    needs: build-develop
+
+    environment:
+      name: develop
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Run Migrations
+      run: dotnet ef database update --configuration Release
+
   deploy-develop:
     name: "deploy develop"
     runs-on: ubuntu-latest
 
-    needs: build-develop
+    needs: migration-develop
 
     environment:
       name: develop
