@@ -121,6 +121,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd home/github
+
+            sed -i "s|ENV|Development|" docker-compose.yml
             sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" docker-compose.yml
 
             sed -i "s|APPLICATION_INSIGHTS_KEY|${{ secrets.APPLICATION_INSIGHTS_KEY }}|" docker-compose.yml
