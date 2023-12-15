@@ -20,12 +20,12 @@ RUN dotnet publish "API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 # create a new user and change directory ownership
-RUN adduser --disabled-password \
-  --home /app \
-  --gecos '' dotnetuser && chown -R dotnetuser /app
+#RUN adduser --disabled-password \
+#  --home /app \
+#  --gecos '' dotnetuser && chown -R dotnetuser /app
 
 # impersonate into the new user
-USER dotnetuser
+#USER dotnetuser
 WORKDIR /app
 
 COPY --from=publish /app/publish .
