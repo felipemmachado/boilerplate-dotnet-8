@@ -151,8 +151,13 @@ jobs:
             sed -i "s|DOCKER_IMAGE_NAME|felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}|" docker-compose.yml
             sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yml
 
+            docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
+
+            docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"'
+
      # - name: docker compose
      #   run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
+     
 
       #- name: run migration
       #  run: docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"'
