@@ -81,8 +81,8 @@ jobs:
         sed -i "s|FILE_KEY_ID|${{ secrets.FILE_KEY_ID }}|" API/appsettings.json
         sed -i "s|FILE_SECRET_KEY|${{ secrets.FILE_SECRET_KEY }}|" API/appsettings.json
 
-    - name: Build
-      run: cat API/appsettings.json
+    #- name: Build
+    #  run: cat API/appsettings.json
 
     - name: Restore dependencies
       run: dotnet restore
