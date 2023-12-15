@@ -4,7 +4,7 @@ services:
     container_name: "DOCKER_CONTAINER_NAME"
     image: "DOCKER_IMAGE_NAME"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://0.0.0.0:5001
 
       - ConnectionStrings__connectionString=CONNECTION_STRING

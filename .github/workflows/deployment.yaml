@@ -44,65 +44,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # - run: |
-      #     security -v unlock-keychain ~/Library/Keychains/login.keychain-db
-
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      #- name: Login to Docker Hub
-        # run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin ${{ secrets.DOCKERHUB_TOKEN }}
-        #run: sudo echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-        #run: echo ${{ secrets.DOCKERHUB_TOKEN }} > dockerhub_pass
-      
-      #- name: Login to Docker Hub
-      #  run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-      - name: Replace Connection String
-        run: |
-          sed -i "s|CONNECTION_STRING|${{ secrets.CONNECTION_STRING }}|" docker-compose.yml
-
-          sed -i "s|APPLICATION_INSIGHTS_KEY|${{ secrets.APPLICATION_INSIGHTS_KEY }}|" docker-compose.yml
-
-          sed -i "s|JWT_APPLICATION_KEY|${{ secrets.JWT_APPLICATION_KEY }}|" docker-compose.yml
-          sed -i "s|JWT_APPLICATION_EXPIRES_MINUTES|${{ vars.JWT_APPLICATION_EXPIRES_MINUTES }}|" docker-compose.yml
-          sed -i "s|JWT_APPLICATION_ISUSER|${{ vars.JWT_APPLICATION_ISUSER }}|" docker-compose.yml
-
-          sed -i "s|JWT_PASSWORD_KEY|${{ secrets.JWT_PASSWORD_KEY }}|" docker-compose.yml
-          sed -i "s|JWT_PASSWORD_EXPIRES_MINUTES|${{ vars.JWT_PASSWORD_EXPIRES_MINUTES }}|" docker-compose.yml
-          sed -i "s|JWT_PASSWORD_ISUSER|${{ vars.JWT_PASSWORD_ISUSER }}|" docker-compose.yml
-
-          sed -i "s|SENDGRID_KEY|${{ vars.SENDGRID_KEY }}|" docker-compose.yml
-          sed -i "s|SENDGRID_FORGOT_PASSWORD_ID|${{ vars.SENDGRID_FORGOT_PASSWORD_ID }}|" docker-compose.yml
-          sed -i "s|SENDGRID_FIRST_ACCESS_ID|${{ vars.SENDGRID_FIRST_ACCESS_ID }}|" docker-compose.yml
-          sed -i "s|URL_FRONT|${{ vars.URL_FRONT }}|" docker-compose.yml
-          sed -i "s|FROM_NAME|${{ vars.FROM_NAME }}|" docker-compose.yml
-          sed -i "s|FORM_EMAIL|${{ vars.FORM_EMAIL }}|" docker-compose.yml
-
-          sed -i "s|FILE_BUCKET_NAME|${{ vars.FILE_BUCKET_NAME }}|" docker-compose.yml
-          sed -i "s|FILE_BUCKET_URL|${{ vars.FILE_BUCKET_URL }}|" docker-compose.yml
-          sed -i "s|FILE_SERVER_URL|${{ vars.FILE_SERVER_URL }}|" docker-compose.yml
-          sed -i "s|FILE_KEY_ID|${{ secrets.FILE_KEY_ID }}|" docker-compose.yml
-          sed -i "s|FILE_SECRET_KEY|${{ secrets.FILE_SECRET_KEY }}|" docker-compose.yml
-
-          sed -i "s|DOCKER_SERVER_NAME|${{ vars.DOCKER_SERVER_NAME }}|" docker-compose.yml
-          sed -i "s|DOCKER_CONTAINER_NAME|${{ vars.DOCKER_CONTAINER_NAME }}|" docker-compose.yml
-          sed -i "s|DOCKER_IMAGE_NAME|felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}|" docker-compose.yml
-          sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yml
-
-      - name: show docker-compose.yml
-        run: cat docker-compose.yml
-
-      - name: ls
-        run: ls ${{ github.workspace }}
-
-      - uses: actions/checkout@v3
-      - name: copy file via ssh password
+      - name: copy docker-compose.yml
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -112,7 +56,7 @@ jobs:
           source: "docker-compose.yml"
           target: "/home/github"
 
-      - name: multiple command
+      - name: replace envs
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -152,20 +96,33 @@ jobs:
             sed -i "s|DOCKER_IMAGE_NAME|felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}|" docker-compose.yml
             sed -i "s|DOCKER_PORT|${{ vars.DOCKER_PORT }}|" docker-compose.yml
 
-            docker pull felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}
+      - name: pull image
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: docker pull felipemmachado28/boilerplate-dotnet8:${{vars.DOCKER_TAG }}
 
+      - name: stop/start container
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
             docker compose down
 
             docker compose up --build -d
 
-            docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"
 
-        # rm docker-compose.yml
-
-      # docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"
-     # - name: docker compose
-     #   run: docker compose -f docker-compose.yml up --build --force-recreate -d && yes | docker image prune --all
-     
-
-      #- name: run migration
-      #  run: docker exec ${{ vars.DOCKER_CONTAINER_NAME }} bash -c "dotnet ef database update --startup-project API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext"'
+      - name: remove docker-compose
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: rm docker-compose.yml
