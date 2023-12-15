@@ -9,7 +9,7 @@ services:
 
       - ConnectionStrings__connectionString=CONNECTION_STRING
 
-      - ApplicationInsights__ConnectionString=APPLICATION_INSIGHTS_KEY    
+      - ApplicationInsights__ConnectionString=APPLICATION_INSIGHTS_KEY
 
       - JwtApplicationConfig__Key=JWT_APPLICATION_KEY
       - JwtApplicationConfig__Issuer=JWT_APPLICATION_ISUSER
