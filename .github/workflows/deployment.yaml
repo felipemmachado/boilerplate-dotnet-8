@@ -103,7 +103,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: Run Migrations
-      run: dotnet ef database update --startup-project /API/API.csproj -p /Infra/Infra.csproj -v -c ApplicationDbContext
+      run: dotnet ef database update --startup-project API/API.csproj -p Infra/Infra.csproj -v -c ApplicationDbContext
 
   deploy-develop:
     name: "deploy develop"
