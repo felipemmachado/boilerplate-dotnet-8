@@ -1,5 +1,5 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/runtime:8.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -16,11 +16,7 @@ WORKDIR "/src/API"
 RUN dotnet build "API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "API.csproj" -c Release -o /app/publish /app/publish \
-  --runtime alpine-x64 \
-  --self-contained true \
-  /p:PublishTrimmed=true \
-  /p:PublishSingleFile=true
+RUN dotnet publish "API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 # create a new user and change directory ownership
