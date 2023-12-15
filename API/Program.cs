@@ -50,6 +50,8 @@ builder.Services.AddResponseCompression(opt =>
 });
 
 
+
+
 var app = builder.Build();
 
 var policy = "ProductionPolicy";
