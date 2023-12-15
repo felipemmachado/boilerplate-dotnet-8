@@ -50,15 +50,13 @@ builder.Services.AddResponseCompression(opt =>
 });
 
 
-
-
 var app = builder.Build();
 
 var policy = "ProductionPolicy";
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -66,9 +64,7 @@ var policy = "ProductionPolicy";
     });
 
     policy = "DevelopPolicy";
-//}
-
-// app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 
