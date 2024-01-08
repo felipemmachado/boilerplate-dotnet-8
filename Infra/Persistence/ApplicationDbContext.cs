@@ -9,6 +9,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : DbContext(options), IApplicationDbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
 
     private readonly IUserService _userService = userService;
 

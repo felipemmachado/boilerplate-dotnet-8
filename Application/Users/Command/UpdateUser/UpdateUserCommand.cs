@@ -9,11 +9,11 @@ namespace Application.Users.Command.UpdateUser;
 
 public record struct UpdateUserCommand(
     Guid UserId,
-    IEnumerable<string> Roles
+    Guid ProfileId
 ) : IRequest<Unit>
 { }
 
-[Authorize(Roles = Role.Users)]
+[Authorize(Roles = Roles.Users)]
 public class UpdateUserCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateUserCommand, Unit>
 {
     private readonly IApplicationDbContext _context = context;
@@ -25,7 +25,7 @@ public class UpdateUserCommandHandler(IApplicationDbContext context) : IRequestH
                             .Where(p => p.Id == request.UserId)
                             .FirstOrDefaultAsync(cancellationToken) ?? throw new ValidationException("Usuário", "Usuário não encontrado");
 
-        user.UpdateRoles(request.Roles);
+        user.ChangeProfile(request.ProfileId);
 
         await _context.SaveChangesAsync(cancellationToken);
 

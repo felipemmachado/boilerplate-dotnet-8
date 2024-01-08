@@ -17,7 +17,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpGet]
     public async Task<IEnumerable<UserDto>> GetUsers()
     {
-        var hasUsers = _userService.HaveSomeRole(Role.Users);
+        var hasUsers = _userService.HaveSomeRole(Roles.Users);
         if (!hasUsers) throw new UnauthorizedAccessException("Você não tem permissão.");
 
         return await Mediator.Send(new GetUsersQuery());

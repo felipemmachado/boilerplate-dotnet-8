@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Authorization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ public class SignInCommandHandler(
     {
         var user = await _context
             .Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Email == request.Email, cancellationToken: cancellationToken)
             ??
             throw new ValidationException("Email ou senha", "E-mail e/ou senha inválidos.");
@@ -30,28 +32,36 @@ public class SignInCommandHandler(
             throw new ValidationException("Email ou senha", "Usuário desativado.");
 
 
-        if (!_passwordService.Check(user.Password, request.Password))
+        if (!_passwordService.Check(user.PasswordHash, request.Password))
             throw new ValidationException("Email ou senha", "E-mail e/ou senha inválidos.");
 
 
-        user.UpdateLastAccess(DateTime.UtcNow);
+        user.UpdateLastAccess();
 
         if (user.FirstAccess == null)
         {
-            user.UpdateFirstAccess(DateTime.UtcNow);
-            user.UpdateLastAccess(user.FirstAccess ?? DateTime.UtcNow);
+            user.UpdateFirstAccess();
+            user.UpdateLastAccess();
         }
 
+        var profile = await _context
+                .Profiles
+                .Where(p => p.Id == user.ProfileId)
+                .Select(p => new { p.IsAdmin, p.Roles })
+                .FirstOrDefaultAsync(cancellationToken)
+                ??
+                throw new ValidationException("Perfil", "Nenhum perfil encontrado."); ;
+
+        var roles = profile.IsAdmin ? Roles.AllRoles.Select(p => p.Value).ToArray() : profile.Roles;
+
+        var token = _jwtService.ApplicationAccessToken(user.Id.ToString(), roles);
+
         await _context.SaveChangesAsync(cancellationToken);
-
-        var token = "";
-
-        token = _jwtService.ApplicationAccessToken(user.Id.ToString(), user.Roles.ToArray());
 
         return new SignInDto
         {
             AccessToken = token,
-            TemporaryPassword = user.ForceChangePassword
+            TemporaryPassword = user.RequestChangePassword
         };
     }
 }

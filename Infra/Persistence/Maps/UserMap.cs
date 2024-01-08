@@ -18,13 +18,8 @@ public class UserMap : IEntityTypeConfiguration<User>
             v => string.Join("|", v),
             v => v.Split("|", StringSplitOptions.RemoveEmptyEntries));
 
-        builder.Property(p => p.Roles)
-            .HasColumnType("text")
-            .HasConversion(fieldConverter);
-
         builder.Property(p => p.Name).HasMaxLength(100).IsRequired().HasColumnType("varchar(100)");
         builder.Property(p => p.Email).HasMaxLength(100).IsRequired().HasColumnType("varchar(100)");
-        builder.Property(p => p.ForceChangePassword);
 
         builder.Property(p => p.DisabledAt).HasColumnType("timestamptz");
         builder.Property(p => p.FirstAccess).HasColumnType("timestamptz");

@@ -9,13 +9,14 @@ using Microsoft.AspNetCore.Authorization;
 namespace Application.Users.Command.CreateUser;
 
 public record struct CreateUserCommand(
+    Guid ProfileId,
     string Name,
     string Email,
     IEnumerable<string> Roles
     ) : IRequest<CreateUserDto>
 { }
 
-[Authorize(Roles = Role.Users)]
+[Authorize(Roles = Roles.Users)]
 public class CreateUserCommandHandler(
     IApplicationDbContext context,
     IPasswordService passwordService,
@@ -39,9 +40,7 @@ public class CreateUserCommandHandler(
         }
 
         var password = _passwordService.GetAlphanumericCode(8);
-        var user = new User(request.Name, request.Email, _passwordService.Generate(password, false), request.Roles);
-
-        user.SetForceChangePassword(true);
+        var user = new User(request.ProfileId, request.Name, request.Email, _passwordService.Generate(password, false));
 
         _context.Users.Add(user);
 

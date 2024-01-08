@@ -5,6 +5,7 @@ namespace Application.Common.Interfaces;
 public interface IApplicationDbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<Profile> Profiles { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

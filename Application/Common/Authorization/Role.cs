@@ -1,16 +1,8 @@
 ﻿namespace Application.Common.Authorization;
-public static class Role
+
+public class Role(string role, string description, IEnumerable<string> rolesNeeds)
 {
-    public const string Users = "user";
-
-    public static IEnumerable<string> GetAdminRoles()
-    {
-        var adminRoles = new List<string>
-        {
-            Users
-        };
-
-
-        return adminRoles;
-    }
+    public string Value = role;
+    public string Description = description;
+    public IEnumerable<string> RolesNeeds = rolesNeeds;
 }
