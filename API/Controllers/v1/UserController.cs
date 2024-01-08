@@ -1,4 +1,5 @@
 ﻿using Application.Common.Authorization;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Queries.Users.ExistsUser;
@@ -16,9 +17,8 @@ public class UserController(IUserService userService) : BaseController
     [HttpGet]
     public async Task<IEnumerable<UserDto>> GetUsers()
     {
-        var hasUsers = _userService.HaveSomeRole(Roles.Users);
-        if (!hasUsers) throw new UnauthorizedAccessException("Você não tem permissão.");
-
+        //var hasUsers = _userService.HaveSomeRole(Roles.Users);
+        // if (!hasUsers) throw new UnauthorizedAccessException("Você não tem permissão.");
         return await Mediator.Send(new GetUsersQuery());
     }
 
@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpPatch("{id}")]
     public async Task Update(Guid id, [FromBody] UpdateUserCommand command)
     {
-        if (id != command.UserId) throw new NotFoundException("usuário não encontrado.");
+        if (id != command.UserId) throw new NotFoundException(ApiResponseMessages.UserNotFound);
 
         await Mediator.Send(command);
     }

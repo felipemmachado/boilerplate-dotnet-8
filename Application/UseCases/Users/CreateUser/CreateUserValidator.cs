@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Common.Constants;
+using FluentValidation;
 
 namespace Application.UseCases.Users.CreateUser;
 public class CreateUserValidator : AbstractValidator<CreateUserCommand>
@@ -9,11 +10,11 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
         RuleFor(v => v.Name)
             .MaximumLength(100)
             .NotEmpty()
-            .WithMessage("Você tem que digitar um nome.");
+            .WithMessage(ApiResponseMessages.RequiredName);
 
         RuleFor(v => v.Email)
             .EmailAddress()
-            .WithMessage("E-mail inválido.");
+            .WithMessage(ApiResponseMessages.InvalidEmail);
 
     }
 }

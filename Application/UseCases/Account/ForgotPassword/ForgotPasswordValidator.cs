@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Common.Constants;
+using FluentValidation;
 
 namespace Application.UseCases.Account.ForgotPassword;
 public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordCommand>
@@ -7,7 +8,7 @@ public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordCommand>
     {
         RuleFor(v => v.Email)
             .EmailAddress()
-            .WithMessage("E-mail inválido.");
+            .WithMessage(ApiResponseMessages.InvalidEmail);
     }
 }
 

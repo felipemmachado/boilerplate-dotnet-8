@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Common.Constants;
+using FluentValidation;
 
 namespace Application.UseCases.Account.SignIn;
 public class SignInValidator : AbstractValidator<SignInCommand>
@@ -7,11 +8,11 @@ public class SignInValidator : AbstractValidator<SignInCommand>
     {
         RuleFor(v => v.Email)
             .EmailAddress()
-            .WithMessage("E-mail inválido.");
+            .WithMessage(ApiResponseMessages.InvalidEmail);
 
         RuleFor(v => v.Password)
             .NotEmpty()
-            .WithMessage("Você tem que digitar uma senha.");
+            .WithMessage(ApiResponseMessages.RequiredPassword);
     }
 }
 

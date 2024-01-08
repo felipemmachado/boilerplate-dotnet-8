@@ -1,4 +1,5 @@
 ﻿using API.Dto;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.UseCases.Account.ForgotPassword;
@@ -38,7 +39,7 @@ public class AccountController(IJwtService jwtService) : BaseController
     public async Task<ActionResult> CreateNewPassword(NewPasswordDto newPasswordDto)
     {
         var isValid = await _jwtService.ValidPasswordToken(newPasswordDto.Token);
-        if (!isValid) throw new ValidationException("Token", "Token Expirado.");
+        if (!isValid) throw new ValidationException(ApiResponseMessages.Token, ApiResponseMessages.TokenExpired);
 
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(newPasswordDto.Token);

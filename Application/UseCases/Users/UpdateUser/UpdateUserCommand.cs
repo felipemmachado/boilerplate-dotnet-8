@@ -1,4 +1,5 @@
 ﻿using Application.Common.Authorization;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using MediatR;
@@ -23,7 +24,9 @@ public class UpdateUserCommandHandler(IApplicationDbContext context) : IRequestH
         var user = await _context
                             .Users
                             .Where(p => p.Id == request.UserId)
-                            .FirstOrDefaultAsync(cancellationToken) ?? throw new ValidationException("Usuário", "Usuário não encontrado");
+                            .FirstOrDefaultAsync(cancellationToken) 
+                            ?? 
+                            throw new ValidationException(ApiResponseMessages.User, ApiResponseMessages.UserNotFound);
 
         user.ChangeProfile(request.ProfileId);
 

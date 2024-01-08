@@ -12,6 +12,6 @@ public abstract class BaseController : ControllerBase
     private ISender? _mediator;
 
     protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetService<ISender>()
-        ?? throw new Exception("Can not start mediator.");
+        ?? throw new Exception("Can't start mediator.");
 }
 
