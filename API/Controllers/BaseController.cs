@@ -9,8 +9,9 @@ namespace API.Controllers;
 [Authorize(AuthenticationSchemes = "JwtApplication")]
 public abstract class BaseController : ControllerBase
 {
-    private ISender _mediator;
+    private ISender? _mediator;
 
-    protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetService<ISender>();
+    protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetService<ISender>()
+        ?? throw new Exception("Can not start mediator.");
 }
 

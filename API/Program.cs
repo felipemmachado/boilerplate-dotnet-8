@@ -2,7 +2,9 @@ using API;
 using API.Configs;
 using Application;
 using Infra;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
@@ -13,7 +15,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opts =>
+    opts.Conventions.Add(new RouteTokenTransformerConvention(new ToKebabParameterTransformer())));
+
 
 builder.Services.AddEndpointsApiExplorer();
 
