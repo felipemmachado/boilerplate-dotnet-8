@@ -14,7 +14,7 @@ public class ProfileMap : IEntityTypeConfiguration<Profile>
         builder.Property(p => p.Id);
 
         builder.Property(p => p.Name).HasMaxLength(100).IsRequired().HasColumnType("varchar(100)");
-        builder.Property(p => p.Roles).HasColumnType("string[]");
+        builder.Property(p => p.Roles).HasColumnType("text[]");
 
         builder.HasMany(p => p.Users).WithOne(p => p.Profile).HasForeignKey(p => p.ProfileId);
     }

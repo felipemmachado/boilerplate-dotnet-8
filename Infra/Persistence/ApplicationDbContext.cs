@@ -16,9 +16,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        //builder.Entity<EntityBase>().Property(p => p.CreatedAt).IsRequired().HasColumnType("timestamptz");
-        // builder.Entity<EntityBase>().Property(p => p.UpdatedAt).HasColumnType("timestamptz");
-
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);

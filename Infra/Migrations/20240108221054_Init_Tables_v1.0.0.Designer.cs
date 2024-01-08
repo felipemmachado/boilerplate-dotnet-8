@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240108220702_Initials_Tables_v1.0.0")]
-    partial class Initials_Tables_v100
+    [Migration("20240108221054_Init_Tables_v1.0.0")]
+    partial class Init_Tables_v100
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace Infra.Migrations
 
                     b.Property<string[]>("Roles")
                         .IsRequired()
-                        .HasColumnType("string[]");
+                        .HasColumnType("text[]");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -133,7 +133,7 @@ namespace Infra.Migrations
                             CreatedAt = new DateTime(2023, 10, 10, 12, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@gmail.com",
                             Name = "Administardor",
-                            PasswordHash = "k8NnNwr8ibspoj8+LbYV6A==.Sfw1H6AGYEI9yTNpoHlGuQ1TqxTeUEy1Ow9tBVW1ju8=",
+                            PasswordHash = "EBqpGTt8Pd9L/t5cfzR6TA==.Fpb1jFxXbk1gfyscwuyIuDMcTEuYd9AQPhum7YBB0JY=",
                             ProfileId = new Guid("3bec3b12-26c7-4cd9-875e-f60807c0613c"),
                             RequestChangePassword = true
                         });
