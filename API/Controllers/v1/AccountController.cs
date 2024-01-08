@@ -1,9 +1,9 @@
 ﻿using API.Dto;
-using Application.Account.Command.ForgotPassword;
-using Application.Account.Command.SignIn;
-using Application.Account.Command.UpdatePassword;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.UseCases.Account.ForgotPassword;
+using Application.UseCases.Account.SignIn;
+using Application.UseCases.Account.UpdatePassword;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

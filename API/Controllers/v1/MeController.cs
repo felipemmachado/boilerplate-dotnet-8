@@ -1,6 +1,6 @@
 ﻿using API.Dto;
-using Application.Account.Command.UpdatePassword;
 using Application.Common.Interfaces;
+using Application.UseCases.Account.UpdatePassword;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

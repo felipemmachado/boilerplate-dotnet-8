@@ -1,11 +1,10 @@
 ﻿using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.Users.Command.CreateUser;
-using Application.Users.Command.UpdateUser;
-using Application.Users.Queries.ExistsUser;
-using Application.Users.Queries.GetUsers;
-using Microsoft.AspNetCore.Authorization;
+using Application.Queries.Users.ExistsUser;
+using Application.Queries.Users.GetUsers;
+using Application.UseCases.Users.CreateUser;
+using Application.UseCases.Users.UpdateUser;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.v1;
