@@ -18,7 +18,6 @@ builder.Services.AddAuthorization(builder.Configuration);
 builder.Services.AddControllers(opts =>
     opts.Conventions.Add(new RouteTokenTransformerConvention(new ToKebabParameterTransformer())));
 
-
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerConfigs();
