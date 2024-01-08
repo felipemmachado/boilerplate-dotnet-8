@@ -7,7 +7,7 @@ public static class LoadConfigs
     public static IServiceCollection AddConfigs(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JwtApplicationConfig>(configuration.GetSection("JwtApplicationConfig"));
-        
+
         services.Configure<JwtPasswordConfig>(configuration.GetSection("JwtPasswordConfig"));
 
         services.Configure<EmailConfig>(configuration.GetSection("EmailConfig"));

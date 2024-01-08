@@ -40,7 +40,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpPatch("{id}")]
     public async Task Update(Guid id, [FromBody] UpdateUserCommand command)
     {
-        if(id != command.UserId) throw new NotFoundException("usuário não encontrado.");
+        if (id != command.UserId) throw new NotFoundException("usuário não encontrado.");
 
         await Mediator.Send(command);
     }

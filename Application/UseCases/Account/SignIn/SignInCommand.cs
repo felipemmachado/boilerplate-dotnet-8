@@ -32,7 +32,7 @@ public class SignInCommandHandler(
             throw new ValidationException("Email ou senha", "Usuário desativado.");
 
 
-        if (!_passwordService.Check(user.PasswordHash, request.Password))
+        if (!_passwordService.Verify(user.PasswordHash, request.Password))
             throw new ValidationException("Email ou senha", "E-mail e/ou senha inválidos.");
 
 

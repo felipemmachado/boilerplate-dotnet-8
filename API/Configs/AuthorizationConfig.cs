@@ -9,7 +9,7 @@ public static class AuthorizationConfig
 {
     public static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtApplicationConfig = configuration.GetSection("JwtApplicationConfig").Get<JwtApplicationConfig>() 
+        var jwtApplicationConfig = configuration.GetSection("JwtApplicationConfig").Get<JwtApplicationConfig>()
             ?? throw new ArgumentNullException("Não foi possível carregar as configs do jwt da aplicação");
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

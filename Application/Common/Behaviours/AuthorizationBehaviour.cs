@@ -28,11 +28,12 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
             {
                 foreach (var roles in authorizeAttributesWithRoles.Select(a => a.Roles?.Split(',')))
                 {
+                    if (roles == null) continue;
+
                     var authorized = _userService.HaveSomeRole(roles);
 
                     // Must be a member of at least one role in roles
                     if (!authorized) throw new ForbiddenAccessException();
-                    
                 }
             }
         }

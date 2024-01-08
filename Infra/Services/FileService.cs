@@ -1,16 +1,11 @@
-﻿using Amazon.S3.Model;
-using Amazon.S3;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using Application.Common.Configs;
 using Application.Common.Interfaces;
 using Application.Common.Models.FileService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Common.Configs;
 
 namespace Infra.Services;
 

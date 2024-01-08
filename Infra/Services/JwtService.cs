@@ -1,6 +1,5 @@
 ﻿using Application.Common.Configs;
 using Application.Common.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,14 +12,14 @@ public class JwtService(IOptions<JwtPasswordConfig> jwtPasswordConfig, IOptions<
     private readonly JwtApplicationConfig _jwtApplicationConfig = jwtApplicationConfig.Value
         ?? throw new ArgumentNullException(nameof(jwtApplicationConfig));
 
-    private readonly JwtPasswordConfig _jwtPasswordConfig = jwtPasswordConfig.Value 
+    private readonly JwtPasswordConfig _jwtPasswordConfig = jwtPasswordConfig.Value
         ?? throw new ArgumentNullException(nameof(jwtPasswordConfig));
 
     public string ApplicationAccessToken(string userId, IEnumerable<string> roles)
     {
         var key = Encoding.UTF8.GetBytes(_jwtApplicationConfig.Key);
 
-        IList<Claim> claimCollection = new List<Claim>
+        IList<Claim> claimCollection = new List<Claim>()
         {
             new(JwtRegisteredClaimNames.Sub, userId),
         };
@@ -51,8 +50,9 @@ public class JwtService(IOptions<JwtPasswordConfig> jwtPasswordConfig, IOptions<
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
-                new Claim("name", name),
+                new Claim(JwtRegisteredClaimNames.Name, name),
             }),
+
             Expires = DateTime.UtcNow.AddMinutes(_jwtPasswordConfig.ExpiresInMinutes),
             Issuer = _jwtPasswordConfig.Issuer,
             Audience = _jwtPasswordConfig.Audience,
@@ -64,6 +64,7 @@ public class JwtService(IOptions<JwtPasswordConfig> jwtPasswordConfig, IOptions<
 
         return stringToken;
     }
+
 
     public async Task<bool> ValidPasswordToken(string token)
     {

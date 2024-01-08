@@ -31,13 +31,10 @@ public class CreateUserCommandHandler(
     {
         var result = await _mediator.Send(new ExistsEmailQuery(request.Email), cancellationToken);
 
-        if (result.Exists)
-        {
-            throw new ValidationException("Usuário", "Esse usuário já existe.");
-        }
+        if (result.Exists) throw new ValidationException("Usuário", "Esse usuário já existe.");
 
-        var password = _passwordService.GetAlphanumericCode(8);
-        var user = new User(request.ProfileId, request.Name, request.Email, _passwordService.Generate(password, false));
+        var password = _passwordService.GenerateRandomPassword();
+        var user = new User(request.ProfileId, request.Name, request.Email, _passwordService.Hash(password));
 
         _context.Users.Add(user);
 

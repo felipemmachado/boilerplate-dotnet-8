@@ -22,7 +22,7 @@ public class UpdatePasswordCommandHandler(
 
     public async Task<Unit> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
     {
-        var newPasswordHash = _passwordService.Generate(request.Password, true);
+        var newPasswordHash = _passwordService.Hash(request.Password);
 
         var user = await _context
             .Users
@@ -34,7 +34,7 @@ public class UpdatePasswordCommandHandler(
         if (!string.IsNullOrWhiteSpace(request.ActualPassword))
         {
             user.ChangePassword();
-            if (!_passwordService.Check(user.PasswordHash, request.ActualPassword))
+            if (!_passwordService.Verify(user.PasswordHash, request.ActualPassword))
                 throw new ValidationException("Password", "Senha atual inválida.");
         }
 

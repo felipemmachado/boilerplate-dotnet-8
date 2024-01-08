@@ -1,74 +1,113 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace Infra.Services;
-public class PasswordService : IPasswordService
+public partial class PasswordService : IPasswordService
 {
     private static readonly int Iterations = 10000; //
-    private static readonly int SaltSize = 16; // 128 bit
-    private static readonly int KeySize = 32; // 256 bit
+    private static readonly int SaltSize = 128 / 8; // 128 bit
+    private static readonly int KeySize = 256 / 8; // 256 bit
+    private const char Delimeter = '.';
+    private static readonly HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
 
-    public string Generate(string password, bool validade)
+    public string Hash(string password)
     {
-        var hasNumber = new Regex(@"[0-9]+");
-        var hasUpperChar = new Regex(@"[A-Z]+");
-        var hasMinimum6Chars = new Regex(@".{6,}");
 
-        if (validade)
+        if (!HasNumber().IsMatch(password))
+            throw new ValidationException(ApiResponseMessages.Password, ApiResponseMessages.PasswordMostHaveAtLeastOneNumber);
+
+        if (!HasUpperChar().IsMatch(password))
+            throw new ValidationException(ApiResponseMessages.Password, ApiResponseMessages.PasswordMostHaveAtLeastOneUpperLetter);
+
+        if (!HasLowerChar().IsMatch(password))
+            throw new ValidationException(ApiResponseMessages.Password, ApiResponseMessages.PasswordMostHaveAtLeastOneLowerLetter);
+
+        if (!HasMinimum8Chars().IsMatch(password))
+            throw new ValidationException(ApiResponseMessages.Password, ApiResponseMessages.PasswordMostHaveAtLeastCharactersLong);
+
+        if (!HasSpecialCharacter().IsMatch(password))
+            throw new ValidationException(ApiResponseMessages.Password, ApiResponseMessages.PasswordMostHaveAtLeastSpecialCaracter);
+
+
+        var salt = RandomNumberGenerator.GetBytes(SaltSize);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, _hashAlgorithmName, KeySize);
+
+
+        return string.Join(Delimeter, Convert.ToBase64String(salt), Convert.ToBase64String(hash));
+    }
+
+    public string GenerateRandomPassword()
+    {
+        var requiredLength = 8;
+        string[] randomChars = [
+            "ABCDEFGHJKLMNOPQRSTUVWXYZ",    // uppercase 
+            "abcdefghijkmnopqrstuvwxyz",    // lowercase
+            "0123456789",                   // digits
+            "!@$?_-"                        // non-alphanumeric
+        ];
+
+        Random rand = new(Environment.TickCount);
+        List<char> chars = [];
+
+
+        chars.Insert(rand.Next(0, chars.Count),
+            randomChars[0][rand.Next(0, randomChars[0].Length)]);
+
+
+        chars.Insert(rand.Next(0, chars.Count),
+            randomChars[1][rand.Next(0, randomChars[1].Length)]);
+
+
+        chars.Insert(rand.Next(0, chars.Count),
+            randomChars[2][rand.Next(0, randomChars[2].Length)]);
+
+
+        chars.Insert(rand.Next(0, chars.Count),
+            randomChars[3][rand.Next(0, randomChars[3].Length)]);
+
+        for (int i = chars.Count; i < requiredLength
+            || chars.Distinct().Count() < requiredLength; i++)
         {
-            if (!hasNumber.IsMatch(password))
-                throw new ValidationException("Password", "A senha tem que ter pelo menos um número.");
-
-            if (!hasUpperChar.IsMatch(password))
-                throw new ValidationException("Password", "A senha tem que ter pelo menos uma letra maiúscula.");
-
-            if (!hasMinimum6Chars.IsMatch(password))
-                throw new ValidationException("Password", "A senha tem que ter pelo menos 6 caracteres.");
+            string rcs = randomChars[rand.Next(0, randomChars.Length)];
+            chars.Insert(rand.Next(0, chars.Count),
+                rcs[rand.Next(0, rcs.Length)]);
         }
 
-
-
-        using var algorithm = new Rfc2898DeriveBytes(
-           password,
-           SaltSize,
-           Iterations,
-           HashAlgorithmName.SHA512);
-        var key = Convert.ToBase64String(algorithm.GetBytes(KeySize));
-        var salt = Convert.ToBase64String(algorithm.Salt);
-
-        return $"{salt}.{key}";
+        return new string(chars.ToArray());
     }
 
-    public string GetAlphanumericCode(int length)
+    public bool Verify(string passwordHash, string password)
     {
-        Random random = new();
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars, length)
-          .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
+        var elements = passwordHash.Split(Delimeter);
 
-    public bool Check(string chave, string password)
-    {
-        var parts = chave.Split('.', 2);
-
-        if (parts.Length != 2)
+        if (elements.Length != 2)
             return false;
 
-        var salt = Convert.FromBase64String(parts[0]);
-        var key = Convert.FromBase64String(parts[1]);
+        var salt = Convert.FromBase64String(elements[0]);
+        var hash = Convert.FromBase64String(elements[1]);
 
-        using var algorithm = new Rfc2898DeriveBytes(
-          password,
-          salt,
-          Iterations,
-          HashAlgorithmName.SHA512);
-        var keyToCheck = algorithm.GetBytes(KeySize);
+        var hashInput = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, _hashAlgorithmName, KeySize);
 
-        var verified = keyToCheck.SequenceEqual(key);
-
-        return verified;
+        return CryptographicOperations.FixedTimeEquals(hash, hashInput);
     }
+
+
+    [GeneratedRegex(@"[!@$?_-]+")]
+    private static partial Regex HasSpecialCharacter();
+
+    [GeneratedRegex(@"[0-9]+")]
+    private static partial Regex HasNumber();
+
+    [GeneratedRegex(@"[A-Z]+")]
+    private static partial Regex HasUpperChar();
+
+    [GeneratedRegex(@"[a-z]+")]
+    private static partial Regex HasLowerChar();
+
+    [GeneratedRegex(@".{8,}")]
+    private static partial Regex HasMinimum8Chars();
 }
 

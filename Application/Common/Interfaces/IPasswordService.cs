@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Common.Interfaces;
+﻿namespace Application.Common.Interfaces;
 public interface IPasswordService
 {
-    string Generate(string password, bool validade);
-    string GetAlphanumericCode(int length);
-    bool Check(string chave, string password);
+    string Hash(string password);
+    string GenerateRandomPassword();
+    bool Verify(string chave, string password);
 }

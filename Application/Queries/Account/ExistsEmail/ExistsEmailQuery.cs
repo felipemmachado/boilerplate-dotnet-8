@@ -14,7 +14,7 @@ public class ExistsEmailQueryHandler(IApplicationDbContext context) : IRequestHa
         var email = await _context
             .Users
             .AsNoTracking()
-            .Where(p => p.Email.Trim().ToLower() == request.Email.Trim().ToLower())
+            .Where(p => p.Email.Trim() == request.Email.Trim())
             .Select(p => p.Email)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Common.Configs;
+﻿namespace Application.Common.Configs;
 public class EmailConfig
 {
-    public string ApiKey { get; set; }
-    public string ForgotPasswordId { get; set; }
-    public string FirstAccessId { get; set; }
-    public string UrlFront { get; set; }
-    public string FromName { get; set; }
-    public string FromEmail { get; set; }
+    public string ApiKey { get; set; } = string.Empty;
+    public string ForgotPasswordId { get; set; } = string.Empty;
+    public string FirstAccessId { get; set; } = string.Empty;
+    public string UrlFront { get; set; } = string.Empty;
+    public string FromName { get; set; } = string.Empty;
+    public string FromEmail { get; set; } = string.Empty;
 }

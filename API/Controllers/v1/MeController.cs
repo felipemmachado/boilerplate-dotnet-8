@@ -1,7 +1,6 @@
 ﻿using API.Dto;
 using Application.Common.Interfaces;
 using Application.UseCases.Account.UpdatePassword;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.v1;

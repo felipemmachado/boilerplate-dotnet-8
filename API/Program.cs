@@ -3,10 +3,8 @@ using API.Configs;
 using API.Services;
 using Application;
 using Application.Common.Interfaces;
-using Application.Common.Models.FileService;
 using Infra;
 using Microsoft.AspNetCore.ResponseCompression;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
